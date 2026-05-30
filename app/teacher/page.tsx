@@ -9,6 +9,8 @@ import { uploadAndProcess, listChapters, getProcessingStatus } from '@/lib/api'
 import { UploadMetadata, ChapterData, ProcessingStatus as Status } from '@/lib/types'
 import { Toast } from '@/components/shared/Toast'
 
+import Link from 'next/link'
+
 export default function TeacherPage() {
     const router = useRouter()
     const [chapters, setChapters] = useState<ChapterData[]>([])
@@ -101,12 +103,20 @@ export default function TeacherPage() {
                             <span className="text-2xl">👨‍🏫</span>
                             <h1 className="text-3xl font-bold text-dark-text">Teacher Dashboard</h1>
                         </div>
-                        <a
-                            href="/"
-                            className="text-brand-purple hover:text-brand-purple/80 font-medium"
-                        >
-                            ← Back
-                        </a>
+                        <div className="flex items-center gap-4">
+                            <Link
+                                href="/teacher/analytics"
+                                className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all"
+                            >
+                                📊 Student Development Insights
+                            </Link>
+                            <a
+                                href="/"
+                                className="text-brand-purple hover:text-brand-purple/80 font-medium text-sm"
+                            >
+                                ← Back
+                            </a>
+                        </div>
                     </div>
                 </div>
             </header>
