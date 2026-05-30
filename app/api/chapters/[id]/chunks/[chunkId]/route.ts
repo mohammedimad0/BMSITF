@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+import { getChapterFromDb, saveChapter } from '@/lib/serverDb'
 
 export async function PATCH(
     request: NextRequest,
@@ -8,25 +7,34 @@ export async function PATCH(
 ) {
     try {
         const body = await request.json()
+        const { id: chapterId, chunkId } = params
 
-        const response = await fetch(
-            `${BACKEND_URL}/chapters/${params.id}/chunks/${params.chunkId}`,
-            {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
-            }
-        )
-
-        if (!response.ok) {
+        const localChapter = getChapterFromDb(chapterId)
+        if (!localChapter) {
             return NextResponse.json(
-                { error: 'Failed to update chunk' },
-                { status: response.status }
+                { error: 'Chapter not found in local server database' },
+                { status: 404 }
             )
         }
 
-        const data = await response.json()
-        return NextResponse.json(data)
+        // Update the specific chunk
+        const updatedChunks = localChapter.chunks.map((chunk) => {
+            if (chunk.chunk_id === chunkId) {
+                return {
+                    ...chunk,
+                    ...body
+                }
+            }
+            return chunk
+        })
+
+        const updatedChapter = {
+            ...localChapter,
+            chunks: updatedChunks
+        }
+
+        saveChapter(updatedChapter)
+        return NextResponse.json(updatedChapter)
     } catch (error) {
         console.error('Update chunk error:', error)
         return NextResponse.json(

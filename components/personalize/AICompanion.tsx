@@ -54,16 +54,37 @@ export default function AICompanion({ profileKey, onAskQuiz }: AICompanionProps)
         return `I can help you review this lesson step-by-step. Feel free to use the tools panel to make quick flashcards or simplify text!`
     }
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (!inputText.trim()) return
         const userMsg = inputText
         setMessages((m) => [...m, { sender: 'user', text: userMsg }])
         setInputText('')
 
-        setTimeout(() => {
+        // Push temporary loading indicator
+        setMessages((m) => [...m, { sender: 'assistant', text: 'Nova is writing...' }])
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMsg, profileKey })
+            })
+
+            if (!response.ok) throw new Error('API failed')
+            const data = await response.json()
+            
+            setMessages((m) => {
+                const list = m.filter(msg => msg.text !== 'Nova is writing...')
+                return [...list, { sender: 'assistant', text: data.reply }]
+            })
+        } catch (e) {
+            // Safe fallback if API is rate-limited or offline
             const reply = getAIResponse(userMsg)
-            setMessages((m) => [...m, { sender: 'assistant', text: reply }])
-        }, 800)
+            setMessages((m) => {
+                const list = m.filter(msg => msg.text !== 'Nova is writing...')
+                return [...list, { sender: 'assistant', text: reply }]
+            })
+        }
     }
 
     // AI Tools actions
