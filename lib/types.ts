@@ -29,10 +29,14 @@ export interface StudentPrefs {
     fontSize: number
     lineHeight: number
     letterSpacing: number
-    background: 'cream' | 'white' | 'blue' | 'dark'
+    background: 'cream' | 'white' | 'blue' | 'dark' | 'sensory' | 'warm'
     showRuler: boolean
     ttsSpeed: number
     ttsAutoPlay: boolean
+    contrast?: 'standard' | 'high'
+    motion?: 'normal' | 'reduced'
+    voiceNarration?: boolean
+    speechRate?: number
 }
 
 export interface ProcessingStatus {

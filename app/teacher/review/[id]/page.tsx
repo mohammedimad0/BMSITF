@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { BeforeAfterView } from '@/components/teacher/BeforeAfterView'
 import { useChapter } from '@/hooks/useChapter'

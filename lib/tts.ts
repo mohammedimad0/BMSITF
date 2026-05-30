@@ -1,9 +1,8 @@
 export class TTSManager {
     private synth: SpeechSynthesis
-    private utterance: SpeechUtterance | null = null
+    private utterance: SpeechSynthesisUtterance | null = null
     private onWordChange: ((index: number) => void) | null = null
-    private wordBoundaries: number[] = []
-    private currentWordIndex = 0
+
 
     constructor() {
         this.synth = window.speechSynthesis

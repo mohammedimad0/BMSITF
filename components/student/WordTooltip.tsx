@@ -9,7 +9,6 @@ interface WordTooltipProps {
 }
 
 export function WordTooltip({
-    word,
     definition,
     children,
 }: WordTooltipProps) {

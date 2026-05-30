@@ -1,6 +1,6 @@
 import { ChapterData, ProcessingStatus, UploadMetadata } from './types'
 
-const BACKEND_URL = 'http://localhost:8000'
+
 
 export async function uploadAndProcess(metadata: UploadMetadata & { file?: File; text?: string }): Promise<{ chapter_id: string }> {
     const formData = new FormData()

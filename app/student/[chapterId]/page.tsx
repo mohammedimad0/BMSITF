@@ -22,6 +22,58 @@ export default function StudentReaderPage({
     const accessibility = useAccessibility()
     const [glossaryOpen, setGlossaryOpen] = useState(false)
 
+    // Apply saved personalization profile to accessibility prefs
+    useEffect(() => {
+        if (!accessibility.mounted) return
+
+        try {
+            const profile = localStorage.getItem('neuroadapt_profile') as
+                | 'dyslexia'
+                | 'autism'
+                | 'adhd'
+                | 'visual'
+                | 'other'
+                | null
+
+            if (!profile) return
+
+            // Map profile -> accessibility preferences
+            if (profile === 'dyslexia') {
+                accessibility.updatePref('font', 'opendyslexic')
+                accessibility.updatePref('fontSize', Math.max(18, accessibility.prefs.fontSize + 4))
+                accessibility.updatePref('lineHeight', Math.max(1.8, accessibility.prefs.lineHeight + 0.2))
+                accessibility.updatePref('letterSpacing', Math.max(0.08, accessibility.prefs.letterSpacing + 0.03))
+                accessibility.updatePref('ttsAutoPlay', true)
+                accessibility.updatePref('ttsSpeed', 0.95)
+                accessibility.updatePref('showRuler', true)
+            } else if (profile === 'autism') {
+                accessibility.updatePref('font', 'lexend')
+                accessibility.updatePref('fontSize', Math.max(16, accessibility.prefs.fontSize + 2))
+                accessibility.updatePref('lineHeight', Math.max(1.8, accessibility.prefs.lineHeight + 0.1))
+                accessibility.updatePref('showRuler', false)
+                accessibility.updatePref('ttsAutoPlay', false)
+            } else if (profile === 'adhd') {
+                accessibility.updatePref('font', 'lexend')
+                accessibility.updatePref('fontSize', Math.max(16, accessibility.prefs.fontSize + 2))
+                accessibility.updatePref('lineHeight', Math.max(1.6, accessibility.prefs.lineHeight))
+                accessibility.updatePref('letterSpacing', Math.max(0.06, accessibility.prefs.letterSpacing + 0.02))
+                accessibility.updatePref('ttsSpeed', 1.1)
+                accessibility.updatePref('ttsAutoPlay', false)
+            } else if (profile === 'visual') {
+                accessibility.updatePref('font', 'system')
+                accessibility.updatePref('fontSize', Math.max(20, accessibility.prefs.fontSize + 6))
+                accessibility.updatePref('lineHeight', Math.max(1.9, accessibility.prefs.lineHeight + 0.3))
+                accessibility.updatePref('background', 'white')
+                accessibility.updatePref('ttsAutoPlay', true)
+                accessibility.updatePref('showRuler', false)
+            } else if (profile === 'other') {
+                // no-op; user can personalize manually
+            }
+        } catch (err) {
+            // ignore
+        }
+    }, [accessibility.mounted])
+
     useEffect(() => {
         if (chapter && reading.currentChunkIndex < chapter.chunks.length) {
             reading.markComplete(chapter.chunks[reading.currentChunkIndex].chunk_id)
@@ -105,6 +157,12 @@ export default function StudentReaderPage({
                 <div className="max-w-4xl mx-auto">
                     {/* Chapter Header */}
                     <div className="text-center mb-12 px-6">
+                        {/* Active profile badge */}
+                        {typeof window !== 'undefined' && localStorage.getItem('neuroadapt_profile') && (
+                            <div className="absolute left-6 top-6 bg-yellow-50 border border-yellow-200 text-sm px-3 py-1 rounded-full">
+                                Profile: {localStorage.getItem('neuroadapt_profile')}
+                            </div>
+                        )}
                         <h1
                             className="text-4xl font-bold mb-3"
                             style={{ color: accessibility.prefs.background === 'dark' ? '#E8E8E8' : '#2C2416' }}

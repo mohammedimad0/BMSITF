@@ -16,7 +16,6 @@ export function TTSControls({
     onWordChange,
     onComplete,
     speed = 1,
-    autoPlay = false,
 }: TTSControlsProps) {
     const [ttsManager, setTtsManager] = useState<ReturnType<typeof createTTSManager> | null>(null)
     const [isPlaying, setIsPlaying] = useState(false)

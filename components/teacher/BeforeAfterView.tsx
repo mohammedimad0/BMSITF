@@ -30,14 +30,6 @@ export function BeforeAfterView({
         }
     }
 
-    const renderSimplifiedWithHighlights = (text: string, keyTerms: string[]) => {
-        let result = text
-        keyTerms.forEach((term) => {
-            const regex = new RegExp(`\\b${term}\\b`, 'gi')
-            result = result.replace(regex, `<mark>$&</mark>`)
-        })
-        return result
-    }
 
     return (
         <div className="w-full space-y-6 bg-white rounded-lg shadow">
